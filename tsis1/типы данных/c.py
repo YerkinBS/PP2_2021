@@ -1,3 +1,1 @@
-n = int(input())
-k = int(input())
-print(k // n)
+print(((179 ** 2) + (971 ** 2)) ** 0.5)

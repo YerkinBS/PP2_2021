@@ -1,16 +1,1 @@
-v, t = int(input()), int(input())
-s = v * t
-if (s <= 108) and (v > 0):
-    print(s)
-if (v > 0) and (s > 108):
-    while s >= 109:
-        s = s - 109
-    print(s)
-if (v < 0) and (s > -109):
-    while (s <= 109) and (s < 0):
-        s = 109 + s
-    print(s)
-if (v < 0) and (s < -109):
-    while (s <= 109) and (s < 0):
-        s = 109 + s
-    print(s)
+print(((1/1**2+1/2**2+1/3**2+1/4**2+1/5**2+1/6**2+1/7**2+1/8**2+1/9**2+1/10**2)*6)**0.5)
