@@ -1,9 +1,8 @@
-a, d = map(int, input().split())
-years = 0
-while True:
-    a *= 3
-    d *= 2
-    years += 1
-    if a > d:
-        print(years)
-        exit()
+n = int(input()) 
+s, t = input(), ''
+for i in s:
+    if ord(i) + n <= 90:
+        t += chr(ord(i) + n)
+    else:
+        t += chr(ord(i) + n - 26)
+print(t)

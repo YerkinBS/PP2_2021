@@ -1,4 +1,2 @@
-a, b, c, d = int(input()), int(input()), int(input()), int(input())
-for i in range(a, b+1):
-    if i % d == c:
-        print(i)
+import re
+print('Found a match!' if re.findall(r'[A-Z][a-z]+', input()) else 'Not matched!')

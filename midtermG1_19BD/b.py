@@ -1,6 +1,5 @@
+import re
+
 s = input()
-tar = input()
-if s.find(tar) == -1:
-    print('Not found')
-else:
-    print('First time', tar, 'occured in position:', s.find(tar))
+t = re.findall(r'\w', s)
+print('Found a match!' if len(t) == len(s) else 'Not matched!')

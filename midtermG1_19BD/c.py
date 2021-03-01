@@ -1,7 +1,4 @@
 n = int(input())
-num = list(map(int, input().split()))
-st = set(num)
-if len(st) == len(num):
-    print('YES')
-else:
-    print('NO')
+arr = sorted(set(list(map(int, input().strip().split()))[:n]))
+for i, el in enumerate(arr, start=1):
+    print(i, el)
