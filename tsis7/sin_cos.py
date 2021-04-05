@@ -9,20 +9,23 @@ pygame.display.set_caption('sin&cos')
 is_clicked_sin, is_clicked_cos = False, False        # check if already clicked or not
 #----------------------------------------------------------------------------------------------
 
-sin_points, cos_points = [], []
+sin_points, cos_points, sin_points2, cos_points2 = [], [], [], []
 n, A = 5, 240
 for x in range(720):
     y = sin(x / 600. * n * pi) * A + 266
     sin_points.append([x+100, y])
+    sin_points2.append([x+101, y])
 for x in range(720):                                           # detecting sin and cos points
     y = int(cos(x / 600. * n * pi) * A + 266) 
     cos_points.append([x+100, y])
+    cos_points2.append([x+101, y])
 clock = pygame.time.Clock()
 
 #----------------------------------------------------------------------------------------------
 def cos_graph(cos_points, color):
     for i in range(0, len(cos_points)-1, 2):
         pygame.draw.aaline(screen, color, cos_points[i], cos_points[i+1], 2)
+        pygame.draw.aaline(screen, color, cos_points2[i], cos_points2[i+1], 2)
         clock.tick(120)
         pygame.display.update()
 
@@ -30,6 +33,7 @@ def cos_graph(cos_points, color):
 
 def sin_graph(sin_points, color):
     pygame.draw.aalines(screen, color, False, sin_points, 2)
+    pygame.draw.aalines(screen, color, False, sin_points2, 2)
     pygame.display.flip()
 
 #------------------------------------------------------------------------------------------------
