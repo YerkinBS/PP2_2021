@@ -41,7 +41,7 @@ def init():
     Y = 5
     SCREEN_WIDTH = 840
     SCREEN_HEIGHT = 650
-    RIGHT_PART_SPEED = [4, 5, 6, 7, 8, 9, 10, 11, 12]
+    RIGHT_PART_SPEED = [2, 3, 4]
     LEFT_PART_SPEED = [7, 8, 9, 10, 11, 12, 13, 14, 15]
     R_SPEED = random.choice(RIGHT_PART_SPEED)
     L_SPEED = random.choice(LEFT_PART_SPEED)
@@ -345,7 +345,7 @@ while True:
             elif game_quit.collidepoint(x, y):
                 pygame.quit()
                 sys.exit()
-
+    
 
     # если при главном меню нажалась кнопка SPACE или при заставке после проигрыша нажалась кнопка RESTART, запускается игра
     if PLAYING:
