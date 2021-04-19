@@ -1,0 +1,1 @@
+{"score1": 6, "score2": 0, "mode": "easy", "player": "1", "snake1.dx": 590, "snake1.dy": 250, "snake2.dx": 150, "snake2.dy": 100, "food.x": 408, "food.y": 360, "snake1.speed": 30}
