@@ -2,6 +2,7 @@ import pygame, random, time, json, pickle, sys
 screen = pygame.display.set_mode((1000, 650))
 clock = pygame.time.Clock()
 pygame.init()
+pygame.display.set_caption('Shnake')
 
 BLUE  = (0, 0, 255)
 RED   = (255, 0, 0)
@@ -135,11 +136,6 @@ def hard_mode_collision(x, y):
 
 
 
-def click_sound():
-    pygame.mixer_music.load('sounds\click.mp3')
-    pygame.mixer_music.play()
-
-
 def game_status(dead1, dead2):
     global player, mode, score1, score2, save_quit, data
     font = pygame.font.SysFont('verdana', 23)
@@ -187,116 +183,123 @@ hard_x4 = [i for i in range(53, 75, 1)] + [i for i in range(253, 525, 1)] + [i f
 
 
 
-def init():
+class Food:
+    def __init__(self):
+        self.x = 350
+        self.y = 300
+        self.rect = screen.blit(apple_img, (self.x, self.y))
 
-    class Food:
-        def __init__(self):
-            self.x = 350
-            self.y = 300
-            self.rect = screen.blit(apple_img, (self.x, self.y))
-
-        def gen(self):
-            if data['mode'] == 'easy':
-                self.x = random.randint(50, 730)
+    def gen(self):
+        if data['mode'] == 'easy':
+            self.x = random.randint(50, 730)
+            self.y = random.randint(50, 576)
+        elif data['mode'] == 'normal':
+            self.x = random.choice(normal_mode_area_x)
+            self.y = random.choice(normal_mode_area_y)
+        elif data['mode'] == 'hard':
+            while True:
                 self.y = random.randint(50, 576)
-            elif data['mode'] == 'normal':
-                self.x = random.choice(normal_mode_area_x)
-                self.y = random.choice(normal_mode_area_y)
-            elif data['mode'] == 'hard':
-                while True:
-                    self.y = random.randint(50, 576)
-                    if 50 <= self.y <= 75 or 550 <= self.y <= 575:
-                        self.x = random.randint(50, 730)
-                        break
-                    if 100 <= self.y <= 125 or 500 <= self.y <= 525:
-                        self.x = random.choice(hard_x4)
-                        break
-                    if 150 <= self.y <= 175 or 450 <= self.y <= 475:
-                        self.x = random.choice(hard_x3)
-                        break
-                    if 200 <= self.y <= 225 or 400 <= self.y <= 425:
-                        self.x = random.choice(hard_x1)
-                        break
-                    if 250 <= self.y <= 275 or 350 <= self.y <= 375:
-                        self.x = random.choice(hard_x2)
-                        break
+                if 50 <= self.y <= 75 or 550 <= self.y <= 575:
+                    self.x = random.randint(50, 730)
+                    break
+                if 100 <= self.y <= 125 or 500 <= self.y <= 525:
+                    self.x = random.choice(hard_x4)
+                    break
+                if 150 <= self.y <= 175 or 450 <= self.y <= 475:
+                    self.x = random.choice(hard_x3)
+                    break
+                if 200 <= self.y <= 225 or 400 <= self.y <= 425:
+                    self.x = random.choice(hard_x1)
+                    break
+                if 250 <= self.y <= 275 or 350 <= self.y <= 375:
+                    self.x = random.choice(hard_x2)
+                    break
 
 
-        def draw(self):
-            self.rect = screen.blit(apple_img, (self.x, self.y))
+    def draw(self):
+        self.rect = screen.blit(apple_img, (self.x, self.y))
 
 
 
-    class Snake:
-        def __init__(self, x, y):
-            self.size = 1
-            self.elements = [[x, y]]
-            self.radius = 10
-            self.dx = 5
-            self.dy = 0
-            self.is_add = False
-            self.speed = 30
-            self.dead = False
+class Snake:
+    def __init__(self, x, y):
+        self.size = 1
+        self.elements = [[x, y]]
+        self.radius = 10
+        self.dx = 5
+        self.dy = 0
+        self.is_add = False
+        self.speed = 30
+        self.dead = False
 
-        def draw(self):
-            for element in self.elements:
-                pygame.draw.circle(screen, (200,190,140), element, self.radius)
+    def draw(self):
+        for element in self.elements:
+            pygame.draw.circle(screen, (200,190,140), element, self.radius)
 
-        def add_to_snake(self):
-            self.size += 1
-            self.elements.append([0, 0])
-            self.is_add = False
-            if self.size % 10 == 0:
-                self.speed += 3
-
-
-        def move(self):
-
-            if self.is_add:
-                self.add_to_snake()
-
-            for i in range(self.size - 1, 0,-1):
-                self.elements[i][0] = self.elements[i-1][0]
-                self.elements[i][1] = self.elements[i-1][1]
-
-            self.elements[0][0] += self.dx
-            self.elements[0][1] += self.dy
-
-            if [self.elements[0][0],self.elements[0][1]] in self.elements[1:]:
-                self.dead = True
-
-            if self.elements[0][0] > 750 - self.radius:
-                self.dead = True
-            elif self.elements[0][0] < 50 + self.radius:
-                self.dead = True
-
-            if self.elements[0][1] > 600 - self.radius:
-                self.dead = True
-            elif self.elements[0][1] < 50 + self.radius:
-                self.dead = True
+    def add_to_snake(self):
+        self.size += 1
+        self.elements.append([0, 0])
+        self.is_add = False
+        if self.size % 10 == 0:
+            self.speed += 3
 
 
-        def eat(self, rect):
-            x = self.elements[0][0]
-            y = self.elements[0][1]
-            if rect.collidepoint(x, y):
-                return True
+    def move(self):
 
-        def two_snakes_collid(self, x, y):
-            if [x, y] in self.elements[1:]:
-                return True
+        if self.is_add:
+            self.add_to_snake()
+
+        for i in range(self.size - 1, 0,-1):
+            self.elements[i][0] = self.elements[i-1][0]
+            self.elements[i][1] = self.elements[i-1][1]
+
+        self.elements[0][0] += self.dx
+        self.elements[0][1] += self.dy
+
+        if [self.elements[0][0],self.elements[0][1]] in self.elements[1:]:
+            self.dead = True
+
+        if self.elements[0][0] > 750 - self.radius:
+            self.dead = True
+        elif self.elements[0][0] < 50 + self.radius:
+            self.dead = True
+
+        if self.elements[0][1] > 600 - self.radius:
+            self.dead = True
+        elif self.elements[0][1] < 50 + self.radius:
+            self.dead = True
 
 
-    global snake1, snake2, food
-    snake1 = Snake(100, 70)
-    snake2 = Snake(150, 100)
-    food = Food()
-    global snakes
-    snakes = [snake1, snake2]
+    def eat(self, rect):
+        x = self.elements[0][0]
+        y = self.elements[0][1]
+        if rect.collidepoint(x, y):
+            return True
+
+    def two_snakes_collid(self, x, y):
+        if [x, y] in self.elements[1:]:
+            return True
 
 
+def uh_sound():
+    pygame.mixer.Sound('sounds/dead.mp3').play()
 
-global data, snake1, snake2, food
+
+def click_sound():
+    pygame.mixer.Sound('sounds\click.mp3').play()
+
+def eat_sound():
+    pygame.mixer.Sound('sounds/eat.mp3').play()
+
+
+global snake1, snake2, food, snakes
+snake1 = Snake(100, 70)
+snake2 = Snake(150, 100)
+food = Food()
+snakes = [snake1, snake2]
+
+
+global data
 data = {
     'score1' : 0,
     'score2' : 0,
@@ -305,13 +308,35 @@ data = {
 }
 
 
-def load():
+def load_settings():
     global data
     with open('local_data.txt', 'r') as f:
         data = json.load(f)
 
 
-init()
+def save_object_snake(objlist, n):
+    if n == '1':
+        with open('snake1.pkl', 'wb') as output:
+            pickle.dump(objlist[0], output, pickle.HIGHEST_PROTOCOL)
+    else:
+        with open('snake2.pkl', 'wb') as output:
+            pickle.dump(objlist[1], output, pickle.HIGHEST_PROTOCOL)
+
+        with open('snake1.pkl', 'wb') as output:
+            pickle.dump(objlist[0], output, pickle.HIGHEST_PROTOCOL)
+
+
+def load_object_snake(objlist, n):
+    if n == '1':
+        with open('snake1.pkl', 'rb') as input:
+            objlist[0] = pickle.load(input)
+    else:
+        with open('snake2.pkl', 'rb') as input:
+            objlist[1] = pickle.load(input)
+
+        with open('snake1.pkl', 'rb') as input:
+            objlist[0] = pickle.load(input)
+
 main_menu()
 
 global menu, d, running, clicked
@@ -338,7 +363,10 @@ while running:
                 time.sleep(1)
                 data['mode'] = 'easy'
                 menu = False
-                init()
+                snake1 = Snake(100, 70)
+                snake2 = Snake(200, 70)
+                snakes = [snake1, snake2]
+                food = Food()
                 game_started = True
 
             if data['mode'] == 'choosing' and normal_btn.collidepoint(x, y):
@@ -348,7 +376,10 @@ while running:
                 time.sleep(1)
                 data['mode'] = 'normal'
                 menu = False
-                init()
+                snake1 = Snake(100, 70)
+                snake2 = Snake(200, 70)
+                snakes = [snake1, snake2]
+                food = Food()
                 game_started = True
 
             if data['mode'] == 'choosing' and hard_btn.collidepoint(x, y):
@@ -358,7 +389,10 @@ while running:
                 time.sleep(1)
                 data['mode'] = 'hard'
                 menu = False
-                init()
+                snake1 = Snake(100, 70)
+                snake2 = Snake(200, 70)
+                snakes = [snake1, snake2]
+                food = Food()
                 game_started = True
 
 
@@ -382,11 +416,17 @@ while running:
 
                 if start_btn.collidepoint(x, y):
                     if clicked:
+                        load_settings()
                         click_sound()
                         screen.blit(start_act_png, (400, 250))
                         pygame.display.flip()
+                        load_object_snake(snakes, data['player'])
+                        food = Food()
+                        food.x = data['food.x']
+                        food.y = data['food.y']
                         menu = False
                         game_started = True
+                        time.sleep(1)
                     
                     elif data['player'] != 'none':
                         click_sound()
@@ -413,15 +453,13 @@ while running:
         if event.type == pygame.KEYDOWN and game_started:
             if game_started and event.key == pygame.K_ESCAPE:
                 game_started = False
-                data['snake1.dx'] = snake1.elements[0][0]
-                data['snake1.dy'] = snake1.elements[0][1]
-                data['snake2.dx'] = snake2.elements[0][0]
-                data['snake2.dy'] = snake2.elements[0][1]
+
                 data['food.x'] = food.x
                 data['food.y'] = food.y
-                data['snake1.speed'] = snake1.speed
                 with open('local_data.txt', 'w') as f:
                     json.dump(data, f)
+
+                save_object_snake(snakes, data['player'])
                 menu = True
                 main_menu()
 
@@ -457,15 +495,13 @@ while running:
         if data['player'] == '2':
             if snake1.eat(food.rect):
                 data['score1'] += 1
-                pygame.mixer.Sound.load('sounds\eat.mp3')
-                pygame.mixer.Sound.play()
+                eat_sound()
                 snake1.is_add = True
                 food.gen()
 
             if snake2.eat(food.rect):
                 data['score2'] += 1
-                pygame.mixer.Sound.load('sounds\eat.mp3')
-                pygame.mixer.Sound.play()
+                eat_sound()
                 snake2.is_add = True
                 food.gen()
 
@@ -481,14 +517,25 @@ while running:
             if data['mode'] != 'easy':
                 if normal_mode_collision(snake1.elements[0][0], snake1.elements[0][1]):
                     snake1.dead = True
+                    uh_sound()
                 if normal_mode_collision(snake2.elements[0][0], snake2.elements[0][1]):
+                    uh_sound()
                     snake2.dead = True
-                
+                if data['mode'] == 'hard':
+                    if hard_mode_collision(snake1.elements[0][0], snake1.elements[0][1]):
+                        uh_sound()
+                        snake1.dead = True
+                    if hard_mode_collision(snake2.elements[0][0], snake2.elements[0][1]):
+                        uh_sound()
+                        snake2.dead = True
+            
             if snake1.two_snakes_collid(snake2.elements[0][0], snake2.elements[0][1]):
-                snake2.dead = True
+                    uh_sound()
+                    snake2.dead = True
 
             if snake2.two_snakes_collid(snake1.elements[0][0], snake1.elements[0][1]):
-                snake1.dead = True
+                    uh_sound()
+                    snake1.dead = True
 
 
             if not snake1.dead:
@@ -506,7 +553,6 @@ while running:
                 menu = True
                 data['mode'] = 'none'
                 data['player'] = 'none'
-                pygame.mixer_music.stop()
                 snake1.dead = False
                 snake2.dead = False
                 main_menu()
@@ -515,8 +561,7 @@ while running:
         if data['player'] == '1':
             if snake1.eat(food.rect):
                 data['score1'] += 1
-                pygame.mixer_music.load('sounds\eat.mp3')
-                pygame.mixer_music.play()
+                eat_sound()
                 snake1.is_add = True
                 food.gen()
             
@@ -535,18 +580,20 @@ while running:
 
             if data['mode'] != 'easy':
                 if normal_mode_collision(snake1.elements[0][0], snake1.elements[0][1]):
+                    uh_sound()
                     snake1.dead = True
                 if data['mode'] == 'hard':
                     if hard_mode_collision(snake1.elements[0][0], snake1.elements[0][1]):
+                        uh_sound()
                         snake1.dead = True
 
             if snake1.dead:
+                uh_sound()
                 time.sleep(1)
                 game_started = False
                 menu = True
                 data['mode'] = 'none'
                 data['player'] = 'none'
-                pygame.mixer_music.stop()
                 snake1.dead = False
                 if clicked:
                     clicked = False
