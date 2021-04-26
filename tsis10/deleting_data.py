@@ -1,12 +1,11 @@
 import psycopg2
 
-DB_NAME = "hjsgjzrg"
-DB_USER = "hjsgjzrg"
-DB_PASS = "OmiISPdv2U7Jtq4kkmm7V6QVJbfSw7IY"
-DB_HOST = "queenie.db.elephantsql.com"
+DB_NAME = "tsis"
+DB_USER = "postgres"
+DB_PASS = "erkin426"
 DB_PORT = "5432"
 
-conn = psycopg2.connect(database = DB_NAME, user = DB_USER, password = DB_PASS, host = DB_HOST, port = DB_PORT)
+conn = psycopg2.connect(database = DB_NAME, user = DB_USER, password = DB_PASS, port = DB_PORT)
 
 print("Database Connected Succesfully")
 
