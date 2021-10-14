@@ -12,5 +12,6 @@ for item in json_data["Subscriptions"]:
         mn = ans
         ans_name = str(item["name"])
 
-print('Name: ' + ans_name)
-print('Price: ' + str(mn))
+print('Name: ' + ans_name + '\nPrice: ' + str(mn))
+
+

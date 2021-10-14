@@ -28,6 +28,7 @@ def draw_line(screen, start, end, width, color):
     B = x1 - x2
     C = x2 * y1 - x1 * y2
 
+    
     if dx > dy:
         if x1 > x2:
             x1, x2 = x2, x1

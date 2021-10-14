@@ -1,6 +1,6 @@
 def cmp(x):
     return (len(votes) - x[1], x[0])
-    
+
 file = open('input.txt', 'r', encoding='utf-8')
 output_file = open("output.txt","w")
 lines = file.readlines()

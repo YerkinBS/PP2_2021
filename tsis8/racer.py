@@ -313,7 +313,7 @@ while True:
             time.sleep(2)
             pygame.mixer_music.load('sounds\\' + random.choice(MUSIC))
             pygame.mixer_music.play(-1)
-
+    
         # радио в котором несколько классных треков :)
         if event.type == pygame.KEYDOWN and event.key == pygame.K_1 and PLAYING:
             pygame.mixer.music.load('sounds\\' + MUSIC[0])

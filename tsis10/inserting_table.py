@@ -13,7 +13,7 @@ print("Database Connected Succesfully")
 cur = conn.cursor()
 cur.execute("""
 
-CREATE TABLE Employe
+CREATE TABLE Lepeshki
 (
 ID INT PRIMARY KEY NOT NULL,
 NAME TEXT NOT NULL,
